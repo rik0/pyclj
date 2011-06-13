@@ -15,6 +15,6 @@ def rember(a, lat):
     '''
 
 
-
-print rember(2, range(4))
-print help(rember)
+if __name__ == '__main__':
+    print rember(2, range(4))
+    help(rember)

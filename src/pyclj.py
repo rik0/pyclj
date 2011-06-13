@@ -2,22 +2,21 @@ from clojure.lang import RT, Compiler, Keyword
 import java.io
 import functools
 
-def clj_namespace():
-    if __name__ == '__main__':
-        return 'user'
-    else:
-        return __name__
-
 def load_string(clojure_code):
     Compiler.load(java.io.StringReader(clojure_code))
 
 def clojure(fn):
+    try:
+        clj_namespace = fn.__module__
+    except AttributeError:
+        clj_namespace = 'user'
+
     clojure_code ='(ns %s)\n%s' % (
-        clj_namespace(),
+        clj_namespace,
         fn.__doc__)
     load_string(clojure_code)
 
-    clojure_fnc = RT.var(clj_namespace(), fn.func_name)
+    clojure_fnc = RT.var(clj_namespace, fn.func_name)
 
     meta = clojure_fnc.meta()
     fn.__doc__ = meta.get(Keyword.intern('doc'))
